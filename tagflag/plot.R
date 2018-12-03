@@ -18,10 +18,11 @@ m[grepl("patt",variable),max:=nsnps*(nsnps-1)*(nsnps-2)/2]
 m[,group:=ifelse(grepl("tags",variable),"at least 1 tag","tagged trios")]
 m[,effect:=ifelse(grepl(".f",variable),"equal OR","equal Z")]
 
-
 library(ggplot2)
 library(cowplot)
 library(RColorBrewer)
+
+# show equal z and equal or
 p1 <- ggplot(m[grepl("tags",variable),],aes(x=nsnps,y=100*value/max,col=effect,fill=effect)) +
   geom_smooth() +
   geom_point() +
@@ -45,10 +46,30 @@ p0 <- ggplot(m[grepl("patt",variable),],aes(x=nsnps,y=100*value/max,col=effect,f
   scale_fill_brewer(palette="Set1") +
   theme(legend.position="bottom") +
   ggtitle("Trios that are tags")
-
 plot_grid(p0,p1,labels=c("d","e"))
 
-ggsave(file="~/share/Projects/cvs/figures/tagging-frequency.pdf",width=8,height=6)
+## show more biologically realistic equal or only
+m <- m[grepl(".f",variable),]
+p1 <- ggplot(m[grepl("tags",variable),],aes(x=nsnps,y=100*value/max)) +
+  geom_smooth(se=FALSE) +
+  geom_point() +
+  ## scale_x_log10() +
+  xlim(0,1750) +
+  background_grid() +
+  labs(x="# SNPs",y="% tagging") +
+  ggtitle("At least one tag")
+
+p0 <- ggplot(m[grepl("patt",variable),],aes(x=nsnps,y=100*value/max)) +
+  geom_smooth(se=FALSE) +
+  geom_point() +
+  ## scale_x_log10() +
+  xlim(0,1750) +
+  background_grid() +
+  labs(x="# SNPs",y="% tagging") +
+  ggtitle("Trios that are tags")
+plot_grid(p0,p1,labels=c("b","c"))
+
+ggsave(file="~/share/Projects/cvs/figures/tagging-frequency.pdf",width=6,height=6)
 
 head(m)
 m[nsnps<2000,sum(value)/sum(max),by="variable"]
