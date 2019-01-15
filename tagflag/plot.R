@@ -69,7 +69,7 @@ p0 <- ggplot(m[grepl("patt",variable),],aes(x=nsnps,y=100*value/max)) +
   ggtitle("Trios that are tags")
 plot_grid(p0,p1,labels=c("b","c"))
 
-ggsave(file="~/share/Projects/cvs/figures/tagging-frequency.pdf",width=6,height=6)
+ggsave(file="~/share/Projects/cvs/figures/tagging-frequency.pdf",width=8,height=6)
 
 head(m)
 m[nsnps<2000,sum(value)/sum(max),by="variable"]

@@ -8,6 +8,8 @@ na <- read.xls(f,3)
 library(data.table)
 library(ggplot2)
 
+################################################################################
+
 ## gdna - what is null?
 d <- melt(as.data.table(gdna)[,c("Donor",grep("count",names(gdna),value=TRUE)),with=FALSE],
           "Donor",
@@ -25,6 +27,8 @@ m0 <- cbind("Label"="gDNA","Cell"="gDNA",m0)
 mu <- mean(m0$logratio)
 mu.se <- sd(m0$logratio)/sqrt(nrow(m0))
 mu + c(-1,1)*1.96*mu.se
+
+################################################################################
 
 ## cm
 d <- melt(as.data.table(cm)[,c("Label","Donor","Direction",grep("count",names(gdna),value=TRUE)),with=FALSE],
@@ -45,6 +49,8 @@ d[,logratio:=ifelse(sw,-1,1) * (log2(G)-log2(A))]
 ggplot(d,aes(x=Donor,y=logratio,col=Label)) + geom_point()
 m <- d #[,.(logratio=mean(logratio)),by=c("Label","Donor")]
 m[,Cell:="Central memory T cells"]
+
+################################################################################
 
 ## naive
 d <- melt(as.data.table(na)[,c("Label","Donor","Direction",grep("count",names(gdna),value=TRUE)),with=FALSE],
@@ -98,6 +104,8 @@ ggplot(m1,aes(x=NLabel,y=2^logratio,col=Label)) +
   theme(legend.position="none") +
   background_grid()
 ggsave("~/share/Projects/cvs/figures/ASE-donors.pdf",height=5,width=7.5)
+
+################################################################################
 
 ### tests
 m <- m[grepl("DNA|het",Label),.(logratio=mean(logratio)),by=c("Cell","Label","Donor")]

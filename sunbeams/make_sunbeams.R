@@ -40,6 +40,8 @@ mclapply(names(scen), function(nm) {
     CV2<-scen[[nm]]$snps[[ 2 ]]
     Tag<-scen[[nm]]$snps[[ 3 ]]
     gammatrue<-scen[[nm]]$gammatrue
+    gammagt<-scen[[nm]]$gammagt
+    gammalt<-scen[[nm]]$gammalt
     for(i in seq_along(scen[[nm]]$N0)) {
         pngprob <- file.path(d,"../figures",paste0("sunbeam_prob_",nm,i,".png"))
         pdfprob <- file.path(d,"../figures",paste0("sunbeam_prob_",nm,i,".pdf"))
@@ -78,7 +80,6 @@ mclapply(names(scen), function(nm) {
           theme(legend.position=c(0.8,0.5),
                 legend.background=element_rect(fill="white",colour="black",size=0.5,linetype=1)) +
           ggtitle(paste(paste(names(scen[[nm]]$snps)[1:2],collapse="+"), "causal"))
-         
         p
         
          ggsave(p,file=pdfwhich,height=PLOTSIZE,width=PLOTSIZE)
@@ -91,7 +92,11 @@ mclapply(names(scen), function(nm) {
                 legend.background=element_rect(fill="white",colour="black",size=0.5,linetype=1)) +
           ## theme(legend.position="right") +
           ggtitle(paste(paste(names(scen[[nm]]$snps)[1:2],collapse="+"), "causal"))
-         ggsave(p,file=pdfprob,height=PLOTSIZE,width=PLOTSIZE)
+               if(!is.null(gammagt))
+                   p=p+annotate("text",x=gammagt[1],y=gammagt[2],label=">",size=6)
+        if(!is.null(gammalt))
+            p= p+annotate("text",x=gammalt[1],y=gammalt[2],label="<",size=6)
+        ggsave(p,file=pdfprob,height=PLOTSIZE,width=PLOTSIZE)
         ggsave(p,file=pngprob, height=PLOTSIZE,width=PLOTSIZE,dpi=300)
     }
 
